@@ -18,4 +18,3 @@ class MergeCommand:
         joined = joined.merge(airports, on="arrival_airport", suffixes=(None, "_arrival"))
         joined.drop(columns=["departure_airport_arrival"], inplace=True)
         joined.to_csv("output.csv")
-        return joined
