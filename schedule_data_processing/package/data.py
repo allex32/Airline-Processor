@@ -1,48 +1,51 @@
-import io
 import os
 
 import pandas as pd
 
 from azure.storage.blob import BlobClient
+from schedule_data_processing.app_configuration import AppConfiguration
 
 SCHEDULE = None
 FLEET = None
 AIRPORTS = None
 
+def cleanup_temp_file(file):
+    if os.path.exists(file):
+        os.remove(file)
 
-def cleanup_temp_files(schedule_file, fleet_file, airports_file):
-    for x in [schedule_file, fleet_file, airports_file]:
-        if os.path.exists(x):
-            os.remove(x)
+
+def get_file(pd_read, blob_name):
+    config = AppConfiguration()
+    blob = BlobClient.from_connection_string(conn_str=config.blob_connection_string,
+                                             container_name=config.blob_container_name,
+                                             blob_name=blob_name)
+    with open(blob_name, "wb") as f:
+        blob.download_blob().readinto(f)
+
+    df = pd_read(blob_name)
+    cleanup_temp_file(blob_name)
+
+    return df
 
 
 def get_schedule():
+    config = AppConfiguration()
     global SCHEDULE
-    blob = BlobClient.from_connection_string(conn_str="DefaultEndpointsProtocol=https;AccountName=zerogrecruiting;AccountKey=q9HNK+vY0InVSBmwM45KcOL7BZJJyBMWDwTNdwKPuqS83Iq8RP4lWETgCUKQkOOsJg4WjAsgdb21Dl8JpU6vkQ==;EndpointSuffix=core.windows.net", container_name="python-case-study", blob_name="schedule.json")
-    with open("schedule.json", "wb") as f:
-        blob.download_blob().readinto(f)
-    SCHEDULE = pd.read_json("schedule.json")
-    cleanup_temp_files("schedule.json", "fleet.csv", "airports.csv")
+    SCHEDULE = get_file(pd.read_json, config.schedule_blob_name)
     return SCHEDULE
 
 
 def get_fleet():
+    config = AppConfiguration()
     global FLEET
-    blob = BlobClient.from_connection_string(conn_str="DefaultEndpointsProtocol=https;AccountName=zerogrecruiting;AccountKey=q9HNK+vY0InVSBmwM45KcOL7BZJJyBMWDwTNdwKPuqS83Iq8RP4lWETgCUKQkOOsJg4WjAsgdb21Dl8JpU6vkQ==;EndpointSuffix=core.windows.net", container_name="python-case-study", blob_name="fleet.csv")
-    with open("fleet.csv", "wb") as f:
-        blob.download_blob().readinto(f)
-    FLEET = pd.read_csv("fleet.csv")
-    cleanup_temp_files("schedule.json", "fleet.csv", "airports.csv")
+    FLEET = get_file(pd.read_csv, config.fleet_blob_name)
     return FLEET
 
 
 def get_airports():
+    config = AppConfiguration()
     global AIRPORTS
-    blob = BlobClient.from_connection_string(conn_str="DefaultEndpointsProtocol=https;AccountName=zerogrecruiting;AccountKey=q9HNK+vY0InVSBmwM45KcOL7BZJJyBMWDwTNdwKPuqS83Iq8RP4lWETgCUKQkOOsJg4WjAsgdb21Dl8JpU6vkQ==;EndpointSuffix=core.windows.net", container_name="python-case-study", blob_name="airports.csv")
-    with open("airports.csv", "wb") as f:
-        blob.download_blob().readinto(f)
-    AIRPORTS = pd.read_csv("airports.csv")
-    cleanup_temp_files("schedule.json", "fleet.csv", "airports.csv")
+    AIRPORTS = get_file(pd.read_csv, config.airports_blob_name)
     return AIRPORTS
 
 
