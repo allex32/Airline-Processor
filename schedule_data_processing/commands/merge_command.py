@@ -1,15 +1,13 @@
-from schedule_data_processing.storage import data
+from schedule_data_processing.storage.data import AzureDataStorage
 
 class MergeCommand:
     def __init__(self):
-        pass
+        self.storage = AzureDataStorage()
+
     def execute(self):
-        data.get_schedule()
-        data.get_airports()
-        data.get_fleet()
-        schedule = data.SCHEDULE
-        fleet = data.FLEET
-        airports = data.AIRPORTS
+        schedule = self.storage.get_schedule()
+        fleet = self.storage.get_fleet()
+        airports = self.storage.get_airports()
         fleet["aircraft_registration"] = fleet["Reg"]
         joined = schedule.merge(fleet, on="aircraft_registration")
         airports["departure_airport"] = airports["Airport"]

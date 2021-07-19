@@ -1,18 +1,16 @@
 import json
+from schedule_data_processing.storage.data import AzureDataStorage
 
-from schedule_data_processing.storage import data
 
 class LookupCommand:
     def __init__(self):
-        pass
+        self.storage = AzureDataStorage()
 
     def execute(self, args):
         flight_numbers = args[2].split(",")
         for flight_number in flight_numbers:
-            data.get_data()
-            schedule = data.SCHEDULE
-            fleet = data.FLEET
-            airports = data.AIRPORTS
+            schedule = self.storage.get_schedule()
+            fleet = self.storage.get_fleet()
             fleet["aircraft_registration"] = fleet["Reg"]
             joined = schedule.merge(fleet, on="aircraft_registration")
             result = joined[joined.flight_number == flight_number]
