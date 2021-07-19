@@ -3,7 +3,7 @@ import os
 import pandas as pd
 
 from azure.storage.blob import BlobClient
-from schedule_data_processing.app_configuration import AppConfiguration
+from schedule_data_processing.configuration.app_configuration import AppConfiguration
 
 SCHEDULE = None
 FLEET = None
