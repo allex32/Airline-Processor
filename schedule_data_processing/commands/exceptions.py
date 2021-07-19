@@ -1,0 +1,2 @@
+class NotSupportedCommandException(Exception):
+    pass
