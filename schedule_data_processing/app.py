@@ -51,9 +51,10 @@ def main(args):
         joined = joined.merge(airports, on="arrival_airport", suffixes=(None, "_arrival"))
         joined.drop(columns=["departure_airport_arrival"], inplace=True)
         joined.to_csv("output.csv")
-        return ""
+        return joined
 
 
 if __name__ == "__main__":
-    print(main(sys.argv))
+    print(main(list(["", "lookup", "ZG2361"])))
+    # print(main(sys.argv))
 
