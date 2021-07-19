@@ -1,4 +1,4 @@
-import json
+from schedule_data_processing.commands.exceptions import LookupEmptyResultException
 from schedule_data_processing.storage.data import AzureDataStorage
 
 
@@ -7,25 +7,18 @@ class LookupCommand:
         self.storage = AzureDataStorage()
 
     def execute(self, args):
+        schedule = self.storage.get_schedule()
+
+        fleet = self.storage.get_fleet(usecols=['IATATypeDesignator', 'TypeName', 'Total', 'Reg', 'Hub', 'Haul'])
+        fleet.rename(columns={"Reg" : "aircraft_registration", "Total": "total_seats"}, inplace=True)
+
         flight_numbers = args[2].split(",")
-        for flight_number in flight_numbers:
-            schedule = self.storage.get_schedule()
-            fleet = self.storage.get_fleet()
-            fleet["aircraft_registration"] = fleet["Reg"]
-            joined = schedule.merge(fleet, on="aircraft_registration")
-            result = joined[joined.flight_number == flight_number]
-            result = result.to_dict(orient="list")
-            keys = []
-            for x in result.keys():
-                keys.append(x)
-            for x in keys:
-                if x in "F,C,E,M":
-                    del result[x]
-                elif x in "RangeLower,RangeUpper,Reg":
-                    del result[x]
-                elif x == "Total":
-                    result["total_seats"] = str(result[x][0])
-                    del result[x]
-                else:
-                    result[x] = str(result[x][0])
-            return json.dumps(result)
+
+        joined = schedule.merge(fleet, on="aircraft_registration")
+
+        result = joined[joined.flight_number.isin(flight_numbers)]
+
+        if result.empty:
+            raise LookupEmptyResultException(flight_numbers)
+
+        return result.assign(**result.select_dtypes(['datetime']).astype(str)).to_json(orient="records")

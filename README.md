@@ -8,7 +8,7 @@ pip install pandas azure-storage-blob
 
 TODO: Can we improve these installation instructions?
 
-ANSWER: We can provide requirements.txt file with implicitly specified dependencies.
+ANSWER: We can provide requirements.txt file with explicitly specified dependencies.
 Then the instruction looks as follows: 
 ```
 pip install -r requirements.txt

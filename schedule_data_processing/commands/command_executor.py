@@ -13,12 +13,12 @@ class CommandExecutor:
     @log_response
     @decorate_response
     def execute(self):
-        if self.command == "lookup":
+        if self.command.lower() == "lookup":
             lookup_command = LookupCommand()
             return lookup_command.execute(self.__args)
 
-        if self.command == "merge":
+        if self.command.lower() == "merge":
             merge_command = MergeCommand()
             return merge_command.execute()
 
-        raise NotSupportedCommandException(f'Provided command {self.command} is not supported')
+        raise NotSupportedCommandException(self.command)
