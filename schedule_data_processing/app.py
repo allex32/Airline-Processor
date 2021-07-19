@@ -3,7 +3,7 @@ from schedule_data_processing.commands.command_executor import CommandExecutor
 if __name__ == "__main__":
     from package import data
 else:
-    from schedule_data_processing.package import data
+    from schedule_data_processing.storage import data
 
 def main(args):
     executor = CommandExecutor(args)

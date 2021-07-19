@@ -1,4 +1,4 @@
-from schedule_data_processing.package import data
+from schedule_data_processing.storage import data
 
 class MergeCommand:
     def __init__(self):
