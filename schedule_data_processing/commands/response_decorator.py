@@ -23,6 +23,6 @@ def decorate_response(fn):
         except NotSupportedCommandException as e:
             return Response(status=ResponseStatus.NOT_SUPPORTED_REQUEST, error_message=str(e))
         except Exception as e:
-            return Response(status=ResponseStatus.FAILURE, error_message=str(e))
+            raise
 
     return decorator
