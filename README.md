@@ -8,9 +8,15 @@ pip install pandas azure-storage-blob
 
 TODO: Can we improve these installation instructions?
 
-ANSWER: We can provide requirements.txt file with explicitly specified dependencies.
-Then the instruction looks as follows: 
+ANSWER: 
+
+1.We can provide requirements.txt file with explicitly specified dependencies.
+
+2.Before installing, it may be convenient to create a new virtual environment.
+
+The updated instruction may look as follows: 
 ```
+py -m venv zeroG_exercise
 pip install -r requirements.txt
 ```
 
@@ -45,3 +51,6 @@ python schedule_data_processing/app.py lookup ZG2361,ZG2362
 
 TODO: Can we find a way to make these commands more user friendly, 
       e.g. `schedule_data lookup ZG2362`?
+      
+ANSWER: It is possible to compile Python scripts into standalone executables 
+or to wrap a launch of the main script into bat/sh script file.
