@@ -2,7 +2,7 @@ from schedule_data_processing.commands.exceptions import NotSupportedCommandExce
 from schedule_data_processing.commands.lookup_command import LookupCommand
 from schedule_data_processing.commands.merge_command import MergeCommand
 from schedule_data_processing.commands.response_decorator import decorate_response
-from schedule_data_processing.logging.app_logger import log_response
+from schedule_data_processing.logger.app_logger import log_response
 
 
 class CommandExecutor:
