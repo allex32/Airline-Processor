@@ -1,22 +1,19 @@
 from schedule_data_processing.commands.exceptions import LookupEmptyResultException
-from schedule_data_processing.storage.data import AzureDataStorage
+from schedule_data_processing.commands.merge_command import MergeCommand
+from schedule_data_processing.configuration.app_configuration import AppConfiguration
 
 
 class LookupCommand:
     def __init__(self):
-        self.storage = AzureDataStorage()
+        self.merge_command = MergeCommand()
+        self.config = AppConfiguration()
 
-    def execute(self, args):
-        schedule = self.storage.get_schedule()
+    def execute(self, flight_numbers):
+        df = self.merge_command.execute_with_result()
 
-        fleet = self.storage.get_fleet(usecols=['IATATypeDesignator', 'TypeName', 'Total', 'Reg', 'Hub', 'Haul'])
-        fleet.rename(columns={"Reg" : "aircraft_registration", "Total": "total_seats"}, inplace=True)
+        df.rename(columns={"Total": "total_seats"}, inplace=True)
 
-        flight_numbers = args[2].split(",")
-
-        joined = schedule.merge(fleet, on="aircraft_registration")
-
-        result = joined[joined.flight_number.isin(flight_numbers)]
+        result = df[df.flight_number.isin(flight_numbers)][self.config.lookup_schema]
 
         if result.empty:
             raise LookupEmptyResultException(flight_numbers)

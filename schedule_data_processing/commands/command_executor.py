@@ -6,16 +6,16 @@ from schedule_data_processing.logging.app_logger import log_response
 
 
 class CommandExecutor:
-    def __init__(self, args):
-        self.__args = args
-        self.command = args[1]
+    def __init__(self, command, **predicates):
+        self.command = command
+        self.predicates = predicates
 
     @log_response
     @decorate_response
     def execute(self):
         if self.command.lower() == "lookup":
             lookup_command = LookupCommand()
-            return lookup_command.execute(self.__args)
+            return lookup_command.execute(self.predicates.get('flight_numbers').split(","))
 
         if self.command.lower() == "merge":
             merge_command = MergeCommand()

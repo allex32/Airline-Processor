@@ -16,3 +16,7 @@ class AppConfiguration:
         self.fleet_blob_name = self._config_parser['Storage']['FleetBlobName']
         self.airports_blob_name = self._config_parser['Storage']['AirportsBlobName']
 
+        self.lookup_schema = self._config_parser['Lookup']['Schema'].split(',')
+
+        self.merge_output_file_path = self._config_parser['Merge']['OutputFilePath']
+
