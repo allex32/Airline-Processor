@@ -3,22 +3,20 @@
 To install the dependencies, run the following (you'll need at least Python 3.7):
 
 ```
-pip install pandas azure-storage-blob
-```
-
-TODO: Can we improve these installation instructions?
-
-ANSWER: 
-
-1.We can provide requirements.txt file with explicitly specified dependencies.
-
-2.Before installing, it may be convenient to create a new virtual environment.
-
-The updated instruction may look as follows: 
-```
-py -m venv zeroG_exercise
+py -m venv myenv
 pip install -r requirements.txt
 ```
+
+# What the library does
+
+The `schedule_data_processing` library connects to an Azure Blob Storage container and
+downloads three files containing simplified schedule data for a fictitious airline.
+
+It has two modes, depending on the parameters passed. 
+
+In `lookup` mode it prints a string to the console containing information for a single flight.
+
+In `merge` mode it joins together all three input files and outputs the result in CSV format.
 
 
 # Usage
@@ -31,7 +29,7 @@ To generate the merged schedule dataset provide the keyword `merge`:
 python schedule_data_processing/app.py merge
 ```
 
-The output will be saved as 
+The output will be saved as ```output.csv``` file
 
 ## Processing
 
@@ -48,9 +46,3 @@ by newlines), provide a list of flights separated by commas, e.g.
 ```
 python schedule_data_processing/app.py lookup ZG2361,ZG2362
 ```
-
-TODO: Can we find a way to make these commands more user friendly, 
-      e.g. `schedule_data lookup ZG2362`?
-      
-ANSWER: It is possible to compile Python scripts into standalone executables 
-or to wrap a launch of the main script into bat/sh script file.
